@@ -1,7 +1,7 @@
 import { Calendar } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getMessagesES, localizer } from '../../helpers';
-import { Navbar, CalendarEvent, CalendarModal, FabAddNew } from "../components"
+import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete } from "../components"
 import { useState } from 'react';
 import { useUiStore } from '../../hooks/useUiStore';
 import { useCalendarStore } from '../../hooks/useCalendarStore';
@@ -58,6 +58,7 @@ setLastView(event);
       />
       <CalendarModal/>
       <FabAddNew/>
+      <FabDelete/>
     </>
   )
 }
