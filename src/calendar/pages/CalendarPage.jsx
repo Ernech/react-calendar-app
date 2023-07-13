@@ -48,7 +48,7 @@ setLastView(event);
         defaultView={lastView}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 'calc(100vh-80px)' }}
+        style={{ height: 'calc(100vh - 80px)' }}
         messages={getMessagesES()}
         eventPropGetter={eventStyleGetter}
         components={{event:CalendarEvent}}
