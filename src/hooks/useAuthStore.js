@@ -18,7 +18,25 @@ export const useAuthStore = ()=>{
         } catch (error) {
             dispatch(onLogout('Wrong credentials'));
             setTimeout(()=>{
-                dispatch(clearErrorMessage)},10);
+                dispatch(clearErrorMessage())},10);
+        }
+    }
+
+    const startRegiter =async({name,email,password})=>{
+        dispatch(onChecking())
+
+        try {
+            const {data} = await calendarApi.post('/auth/new',{name,email,password});
+            localStorage.setItem('token',data.token);
+            localStorage.setItem('token-init-date',new Date().getDate());
+            dispatch(onLogin({name:data.name,uid:data.uid}))
+        } catch (error) {
+            console.log({error});
+            dispatch(onLogout(error.response.data.msg));
+            setTimeout(()=>{
+                dispatch(clearErrorMessage())
+            },10)
+            
         }
     }
 
@@ -29,6 +47,7 @@ export const useAuthStore = ()=>{
         user,
         errorMessage,
         // Methods
-        startLogin
+        startLogin,
+        startRegiter
     }
 }
