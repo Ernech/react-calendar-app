@@ -13,10 +13,11 @@ export const CalendarPage = () => {
   const { openDateModal } = useUiStore();
   const { events, setActiveEvent,startLoadingEvents }=useCalendarStore();
   const eventStyleGetter = (event,start,end, isSelected)=>{
+
   useEffect(() => {
     startLoadingEvents();
   },[])
-  
+
       const style = {
         backGroundColor:'#347CF7',
         borderRadius: '0px',
