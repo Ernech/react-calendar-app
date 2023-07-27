@@ -26,15 +26,23 @@ export const useCalendarStore = () => {
 
         } catch (error) {
             console.log(error);
-            Swal.fire('There was an error while saving the event',error.response.data.msg,'error')
+            Swal.fire('There was an error while saving the event',error.response.data.msg,'error');
         }
 
 
 
     }
 
-    const startDeletingEvent = () => {
-        dispatch(onDeleteEvent());
+    const startDeletingEvent = async() => {
+        try {
+            if(activeEvent===null) return;
+            await calendarApi.delete(`/events/${activeEvent.id}`);
+            dispatch(onDeleteEvent());
+            
+        } catch (error) {
+            console.log(error);
+            Swal.fire('There was an error while saving the event',error.response.data.msg,'error');
+        }
     }
 
     const startLoadingEvents = async () => {
