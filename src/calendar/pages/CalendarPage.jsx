@@ -12,12 +12,12 @@ export const CalendarPage = () => {
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || "week");
   const { openDateModal } = useUiStore();
   const { events, setActiveEvent,startLoadingEvents }=useCalendarStore();
-  const eventStyleGetter = (event,start,end, isSelected)=>{
 
   useEffect(() => {
     startLoadingEvents();
-  },[])
+  },[]);
 
+  const eventStyleGetter = (event,start,end, isSelected)=>{
       const style = {
         backGroundColor:'#347CF7',
         borderRadius: '0px',
