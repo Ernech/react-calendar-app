@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { initialState, notAuthenticatedState } from "../__fixtures/authStates";
 import { act } from "react-dom/test-utils";
 import { testUserCredentials } from "../__fixtures/testUser";
+import { calendarApi } from "../../src/api";
 
 const getMockStore = (initialState)=>{
     return configureStore({
@@ -20,6 +21,8 @@ const getMockStore = (initialState)=>{
 
 describe('Test on useAuthStore', () => {
     
+    beforeEach(()=>localStorage.clear());
+
     test('should return default values', () => {
         const mockStore = getMockStore({...initialState});
            const { result }=renderHook(()=>useAuthStore(), {
@@ -37,7 +40,7 @@ describe('Test on useAuthStore', () => {
     });
 
     test('startLogin should preform login correctly', async() => {
-        localStorage.clear();
+        
         const mockStore = getMockStore({...notAuthenticatedState})
         const {result} = renderHook(()=> useAuthStore(),{
             wrapper: ({children})=><Provider store={mockStore}>{children}</Provider>
@@ -58,7 +61,6 @@ describe('Test on useAuthStore', () => {
     });
 
     test('startLogin should fail authentication', async() => {
-        localStorage.clear();
         const mockStore = getMockStore({...notAuthenticatedState})
         const {result} = renderHook(()=> useAuthStore(),{
             wrapper: ({children})=><Provider store={mockStore}>{children}</Provider>
@@ -78,5 +80,37 @@ describe('Test on useAuthStore', () => {
             ()=>expect(result.current.errorMessage).toBe(undefined)
           );
         });
+
+    test('startRegister should register a new user', async() => {
+        const mockStore = getMockStore({...notAuthenticatedState})
+        const {result} = renderHook(()=> useAuthStore(),{
+            wrapper: ({children})=><Provider store={mockStore}>{children}</Provider>
+        });
+        
+        const spy = jest.spyOn(calendarApi,'post').mockReturnValue({
+            data:{
+                ok:true,
+                uid:"s4a5dasd515",
+                name:'Test 2',
+                token:"ANY-TOKEN"
+            }
+        });
+
+        await act(async()=>{
+            await result.current.startRegiter({email:'test2@google.com', password:'9876xyz',name:'Test 2'});
+          });
+
+        const {status, errorMessage, user} = result.current;
+        expect({status,errorMessage,user}).toEqual({
+            status: 'authenticated',
+            user: { name: 'Test 2', uid: 's4a5dasd515' },
+            errorMessage: undefined,
+        });
+
+        spy.mockRestore()
+
+
+        
+    })
 
 });
