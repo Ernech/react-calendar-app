@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authSlice } from "../../src/auth/authSlice";
 import { useAuthStore } from "../../src/hooks/useAuthStore";
-import { renderHook } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { initialState, notAuthenticatedState } from "../__fixtures/authStates";
 import { act } from "react-dom/test-utils";
@@ -56,5 +56,27 @@ describe('Test on useAuthStore', () => {
         expect(localStorage.getItem('token')).toEqual(expect.any(String));
         expect(localStorage.getItem('token-init-date')).toEqual(expect.any(String));
     });
+
+    test('startLogin should fail authentication', async() => {
+        localStorage.clear();
+        const mockStore = getMockStore({...notAuthenticatedState})
+        const {result} = renderHook(()=> useAuthStore(),{
+            wrapper: ({children})=><Provider store={mockStore}>{children}</Provider>
+        });
+        
+        await act(async()=>{
+            await result.current.startLogin({user:'some@google.com', password:'7894695'});
+          });
+          
+          const { status , user, errorMessage} = result.current;
+          expect({status , user, errorMessage}).toEqual({ status: 'not-authenticated',
+          user: {},
+          errorMessage: 'Wrong credentials',})
+          expect(localStorage.getItem('token')).toBe(null);
+          expect(localStorage.getItem('token-init-date')).toBe(null);
+          await waitFor(
+            ()=>expect(result.current.errorMessage).toBe(undefined)
+          );
+        });
 
 });
