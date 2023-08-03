@@ -108,9 +108,24 @@ describe('Test on useAuthStore', () => {
         });
 
         spy.mockRestore()
+    });
 
+    test('startRegister should fail in creation ', async() => {
+        const mockStore = getMockStore({...notAuthenticatedState})
+        const {result} = renderHook(()=> useAuthStore(),{
+            wrapper: ({children})=><Provider store={mockStore}>{children}</Provider>
+        });
+        await act(async()=>{
+            await result.current.startRegiter(testUserCredentials);
+          });
 
-        
-    })
+        const {status, errorMessage, user} = result.current;
+        expect({status,errorMessage,user}).toEqual({
+            status: 'not-authenticated',
+            user: {},
+            errorMessage: "There's already a unser with the email test@gmail.com in the DB",
+        });
+
+    });
 
 });
